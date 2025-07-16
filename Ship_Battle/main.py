@@ -123,58 +123,9 @@ def endbutton_click(view):
     update_game_mode()
 
 
-def randomize_ships(ship_field):
-
-    ship_field.clear_field()
-
-    ships_to_place = ship_field.ships.copy()
-    placed_ships = []
-
-    for size in ships_to_place:
-        placed = False
-        attempts = 0
-        while not placed and attempts < 100:
-            row = random.randint(0, ShipField.field_size - 1)
-            col = random.randint(0, ShipField.field_size - 1)
-            direction = random.choice([ShipDirection.VERTICAL, ShipDirection.HORIZONTAL])
-
-            ship_field.set_ship_size(size)
-            ship_field.set_ship_direction(direction)
-
-            if ship_field.check_possible(row, col):
-                ship_field.set_ship(row, col)
-                placed = True
-                placed_ships.append(size)
-            attempts += 1
-
-    print(f"Placed ships: {placed_ships}")
-
-
-def randomize_ships_enemy(ship_field):
-
-    ship_field.clear_field()
-
-    ships_to_place = ship_field.ships.copy()
-    placed_ships = []
-
-    for size in ships_to_place:
-        placed = False
-        attempts = 0
-        while not placed and attempts < 100:
-            row = random.randint(0, ShipField.field_size - 1)
-            col = random.randint(0, ShipField.field_size - 1)
-            direction = random.choice([ShipDirection.VERTICAL, ShipDirection.HORIZONTAL])
-
-            ship_field.set_ship_size(size)
-            ship_field.set_ship_direction(direction)
-
-            if ship_field.check_possible(row, col):
-                ship_field.set_ship(row, col)
-                placed = True
-                placed_ships.append(size)
-            attempts += 1
-
-    print(f"Placed ships: {placed_ships}")
+def randomize_ships_in_right_view(view):
+    view.ship_field.randomize_ships()
+    colorize(view)
 
 
 def refresh_remaining_ships_label(view):
@@ -227,6 +178,8 @@ def update_game_mode():
         window.geometry('1020x640')
         my_view.ship_field.set_field_mode(ShipMode.PUT)
         enemy_view.ship_field.set_field_mode(ShipMode.INACTIVE)
+
+        enemy_view.ship_field.randomize_ships() #Beim starten werden zufällig beim Gegner die Schiffe aufgestellt. Kann man auch abstellen, wenn es nicht benötigt wird 
 
         lbl_lower_enemy_horizontal.grid(column=start_column_my_field, row=row_horizontal_separator, columnspan=10)
         lbl_lower_horizontal.grid(column=start_column_enemy_field, row=row_horizontal_separator, columnspan=10)
@@ -329,8 +282,8 @@ endbutton = Button(window, text='END', width=20, height=2, command=lambda: endbu
 start_button = Button(window, text='START', width=20, height=2, command=next_game_mode)
 load_game_button = Button(window, text='LOAD', width=20, height=2)
 exit_button = Button(window, text='EXIT', width=20, height=2)
-randomize_button = Button(window, text='RANDOMIZE', width=20, height=2, command=lambda: randomize_ships(my_view.ship_field))
-randomize_button_enemy = Button(window, text='RANDOMIZE', width=20, height=2, command=lambda: randomize_ships(enemy_view.ship_field))
+randomize_button = Button(window, text='RANDOMIZE', width=20, height=2, command=lambda: randomize_ships_in_right_view(my_view))
+randomize_button_enemy = Button(window, text='RANDOMIZE', width=20, height=2, command=lambda: randomize_ships_in_right_view(enemy_view))
 
 
 game_mode = GameMode.MENU

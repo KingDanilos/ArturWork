@@ -259,6 +259,31 @@ class ShipField:
         self.field_mode = ShipMode.PUT
         self.ship_direction = ShipDirection.VERTICAL
 
+    def randomize_ships(self):
+        self.clear_field()
+
+        ships_to_place = self.ships.copy()
+        placed_ships = []
+
+        for size in ships_to_place:
+            placed = False
+            attempts = 0
+            while not placed and attempts < 100:
+                row = random.randint(0, ShipField.field_size - 1)
+                col = random.randint(0, ShipField.field_size - 1)
+                direction = random.choice([ShipDirection.VERTICAL, ShipDirection.HORIZONTAL])
+
+                self.set_ship_size(size)
+                self.set_ship_direction(direction)
+
+                if self.check_possible(row, col):
+                    self.set_ship(row, col)
+                    placed = True
+                    placed_ships.append(size)
+                attempts += 1
+
+        print(f"Placed ships: {placed_ships}")
+
 
     def print_field(self):
         print(self.ships)
